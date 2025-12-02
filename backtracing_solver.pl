@@ -4,8 +4,19 @@
 value(X, V) :-
     (X = V).
 
+all4_different(A,B,C,D) :-
+    A \= B, A \= C, A \= D,
+    B \= C, B \= D,
+    C \= D.
+
+between(Min, Max, Min) :- Min =< Max.
+between(Min, Max, X) :-
+    Min < Max,
+    Next is Min + 1,
+    between(Next, Max, X).
+
 sudoku([I0,I1,I2,I3,I4,I5,I6,I7,I8,I9,Ia,Ib,Ic,Id,Ie,If],
-       [S0,S1,S2,S3,S4,S5,S6,S7,S8,S9,Sa,Sb,Sc,Sd,Se,Sf]) :-  
+       [S0,S1,S2,S3,S4,S5,S6,S7,S8,S9,Sa,Sb,Sc,Sd,Se,Sf]) :-
   
   % All solution cells must be between 1 and 4
   between(1,4,S0), between(1,4,S1), between(1,4,S2), between(1,4,S3),
@@ -32,47 +43,22 @@ sudoku([I0,I1,I2,I3,I4,I5,I6,I7,I8,I9,Ia,Ib,Ic,Id,Ie,If],
   value(If, Sf),
 
   % A cell must have no duplicates in it's row, column, or 2x2.
+
   % rows
-  dif(S0, S1), dif(S0, S2), dif(S0, S3),
-  dif(S1, S2), dif(S1, S3),
-  dif(S2, S3),
-
-  dif(S4, S5), dif(S4, S6), dif(S4, S7),
-  dif(S5, S6), dif(S5, S7),
-  dif(S6, S7),
-
-  dif(S8, S9), dif(S8, Sa), dif(S8, Sb),
-  dif(S9, Sa), dif(S9, Sb),
-  dif(Sa, Sb),
-
-  dif(Sc, Sd), dif(Sc, Se), dif(Sc, Sf),
-  dif(Sd, Se), dif(Sd, Sf),
-  dif(Se, Sf),
+  all4_different(S0, S1, S2, S3),
+  all4_different(S4, S5, S6, S7),
+  all4_different(S8, S9, Sa, Sb),
+  all4_different(Sc, Sd, Se, Sf),
 
   % columns
-  dif(S0, S4), dif(S0, S8), dif(S0, Sc),
-  dif(S4, S8), dif(S4, Sc),
-  dif(S8, Sc),
-
-  dif(S1, S4), dif(S1, S9), dif(S1, Sd),
-  dif(S5, S9), dif(S5, Sd),
-  dif(S9, Sd),
-
-  dif(S2, S5), dif(S2, Sa), dif(S2, Se),
-  dif(S6, Sa), dif(S6, Se),
-  dif(Sa, Se),
-
-  dif(S3, S6), dif(S3, Sb), dif(S3, Sf),
-  dif(S7, Sb), dif(S7, Sf),
-  dif(Sb, Sf),
+  all4_different(S0, S4, S8, Sc),
+  all4_different(S1, S5, S9, Sd),
+  all4_different(S2, S6, Sa, Se),
+  all4_different(S3, S7, Sb, Sf),
+  
 
   % blocks (Only need to check a diagonal, row and col cover the other 2)
-  dif(S0, S5),
-  dif(S1, S4),
-  dif(S2, S7),
-  dif(S3, S6),
-
-  dif(S8, Sd),
-  dif(S9, Sc),
-  dif(Sa, Sf),
-  dif(Sb, Se).
+  all4_different(S0, S1, S4, S5),
+  all4_different(S2, S3, S6, S7),
+  all4_different(S8, S9, Sc, Sd),
+  all4_different(Sa, Sb, Se, Sf).
